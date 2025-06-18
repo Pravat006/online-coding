@@ -12,7 +12,8 @@ const codeFileSchema = new Schema({
     },
     content: {
         type: String,
-        required: true
+        required: true,
+        default: ""
     },
     owner:{
         type: Schema.Types.ObjectId,
