@@ -1,42 +1,42 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import { clerkMiddleware } from '@clerk/express';
-import { saveNewUserToDB } from './middleware/clerk';
-import { dbInstance } from './db/dbConnect.js';
+import { saveNewUserToDB } from './middleware/clerk.js';
+import connectDB from './db/dbConnect.js';
+import cors from 'cors'
 
 const app = express();
-const PORT =  process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
 
 dotenv.config({
   path: "./.env"
 })
 
+app.use(cors({
+  origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+  credentials: true,
+}))
+
+// Connect to MongoDB
+connectDB();
 
 app.use(express.json());
 
-// apply clerk auth middleware globally
-app.use(clerkMiddleware()) 
-app.use(saveNewUserToDB())
+// Apply middlewares
+app.use(clerkMiddleware());
+app.use(saveNewUserToDB);
 
 app.get('/', (req, res) => {
   res.send('Hello from Express!');
 });
 
-
-dbInstance.then(() => {
-  console.log('Database connected successfully');
-}
-).catch((error) => {
-  console.error('Database connection failed:', error);
-  process.exit(1); // Exit the process with failure
-}
-);
-
-
-
-
-
-
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
+
+
+
+
+
+
+
