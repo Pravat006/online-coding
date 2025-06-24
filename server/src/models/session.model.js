@@ -1,26 +1,25 @@
-import { model, Schema } from "mongoose";
+import mongoose from "mongoose";
 
-
-
-const sessionSchema = new Schema({
+const colaborationSessionSchema = new mongoose.Schema({
     colaborationSessionId: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        index: true
     },
     name: {
         type: String,
-        required: true
+        required: true,
+        trim: true
     },
     owner: {
-        type: Schema.Types.ObjectId,
-        ref: 'User',
+        type: String, // <-- CHANGE THIS FROM ObjectId TO String
         required: true
     },
+    // ... other fields like participants, etc.
+}, { timestamps: true });
 
-}, {timestamps:true})
-
-const ColaborationSession = model('ColaborationSession', sessionSchema);
+const ColaborationSession = mongoose.model("ColaborationSession", colaborationSessionSchema);
 
 export default ColaborationSession;
 

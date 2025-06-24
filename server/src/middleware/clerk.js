@@ -10,7 +10,7 @@ const saveNewUserToDB = asyncHandler(async (req, res, next) => {
     if (!userId) {
         return next(); // Continue to next middleware if no user
     }
-    
+
     // Check if userId exists in the database
     let existingUser = await User.findOne({ clerkId: userId });
     if (existingUser) {
