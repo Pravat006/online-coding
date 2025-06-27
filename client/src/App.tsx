@@ -1,19 +1,20 @@
 
-import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/clerk-react'
-import './App.css'
+// import { Editor } from '@monaco-editor/react'
+import Editor from './components/Editor'
+import Navbar from './components/Navbar'
 
 function App() {
 
+
   return (
-   <div >
-     <h2 className='text-blue-500 text-5xl font-bold animate-bounce'>Hello</h2>
-      <SignedOut>
-        <SignInButton />
-      </SignedOut>
-      <SignedIn>
-        <UserButton />
-      </SignedIn>
-   </div>
+    <div className='w-full flex flex-col justify-center items-start'>
+      <Navbar />
+      <div className='w-full flex flex-col justify-center items-start bg-gray-100 min-h-screen p-4'>
+
+        <Editor />;
+
+      </div>
+    </div>
   )
 }
 
