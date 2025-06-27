@@ -18,3 +18,6 @@ const sessionParticipantSchema = new Schema({
 
 const SessionParticipant = model('SessionParticipant', sessionParticipantSchema);
 export default SessionParticipant;
+
+
+

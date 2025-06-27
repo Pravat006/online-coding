@@ -1,19 +1,14 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 const colaborationSessionSchema = new mongoose.Schema({
-    colaborationSessionId: {
-        type: String,
-        required: true,
-        unique: true,
-        index: true
-    },
     name: {
         type: String,
         required: true,
         trim: true
     },
     owner: {
-        type: String, // <-- CHANGE THIS FROM ObjectId TO String
+        type: Schema.Types.ObjectId, 
+        ref: 'User', // Assuming you have a User model
         required: true
     },
     // ... other fields like participants, etc.
