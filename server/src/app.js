@@ -9,6 +9,7 @@ import { Server } from "socket.io";
 import morganMiddleware from "./logger/morgan.js";
 import { saveNewUserToDB } from "./middleware/clerk.js";
 import sessionRouter from "./routes/session.route.js";
+import { initializeSocketIo } from "./socket/socket.js";
 
 
 const app = express();
@@ -55,6 +56,12 @@ app.get("/", (req, res) => {
 });
 
 app.use("/session", sessionRouter);
+
+
+
+
+initializeSocketIo(io);
+
 
 
 // Global error handler

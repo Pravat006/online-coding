@@ -1,17 +1,18 @@
 
 
-export const SessionEventEnum= Object.freeze({
+export const SessionEventEnum = Object.freeze({
 
     // connected event
     CONNECTED_EVENT: "connected",
     // disconnected event
     DISCONNECTED_EVENT: "disconnected",
     // session created event
-    CREATED_EVENT: "session-created",
-    // session deleted event
-    DELETED_EVENT: "session-deleted",
+    CREATED_EVENT: "room-created",
     // session joined event
-    JOINED_EVENT: "join-room",
+    JOINED_EVENT: "join-session",
+    // session deleted event
+    DELETED_EVENT: "room-deleted",
+
     // session left event
     LEFT_EVENT: "session-left",
     // session updated event
@@ -28,6 +29,10 @@ export const SessionEventEnum= Object.freeze({
     CODE_RECIEVE_EVENT: "recieve-code",
     CURSOR_UPDATE_EVENT: "cursor-update",
     RECIEVE_CURSOR_EVENT: "recieve-cursor",
+    ERROR_EVENT: "error",
+    // session error event
+    SEND_MESSAGE_EVENT: "send-message",
+    RECIEVE_MESSAGE_EVENT: "recieve-message",
 
 
 })

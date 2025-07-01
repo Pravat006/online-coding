@@ -22,7 +22,7 @@ dotenv.config({ path: "./.env" });
 
 
 
-const startServer= ()=>{
+const startServer = () => {
   httpServer.listen(process.env.PORT || 8000, () => {
     console.log(`Server is running at http://localhost:${process.env.PORT}`);
   });
