@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import { clerkMiddleware } from "@clerk/express";
+
 import bodyParser from "body-parser";
 import { createServer } from "http";
 import { Server } from "socket.io";
@@ -13,7 +13,7 @@ import { initializeSocketIo } from "./socket/socket.js";
 
 
 const app = express();
-const httpServer= createServer(app)
+const httpServer = createServer(app)
 
 const io = new Server(httpServer, {
   pingTimeout: 60000,
@@ -46,9 +46,6 @@ app.use(express.static("public"));
 // Logger
 app.use(morganMiddleware);
 
-// Clerk middleware
-app.use(clerkMiddleware());
-app.use(saveNewUserToDB);
 
 // Routes
 app.get("/", (req, res) => {
