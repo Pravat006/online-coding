@@ -1,15 +1,15 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-
+import session from "express-session";
+import passport from "passport";
 import bodyParser from "body-parser";
 import { createServer } from "http";
 import { Server } from "socket.io";
 
 import morganMiddleware from "./logger/morgan.js";
-import { saveNewUserToDB } from "./middleware/clerk.js";
-import sessionRouter from "./routes/session.route.js";
-import { initializeSocketIo } from "./socket/socket.js";
+
+// import { initializeSocketIo } from "./socket/socket.js";
 
 
 const app = express();
@@ -34,6 +34,21 @@ app.use(cors({
 dotenv.config();
 
 
+app.use(
+  session({
+    secret: process.env.EXPRESS_SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
+      secure: false,
+      httpOnly: true
+    }
+  }))
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 // Body parsers
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -52,12 +67,17 @@ app.get("/", (req, res) => {
   res.status(200).json({ message: "Welcome to the Collaboration App API" });
 });
 
-app.use("/session", sessionRouter);
 
 
 
+import sessionRouter from "./routes/session.route.js";
+import authRouter from "./routes/auth.route.js";
 
-initializeSocketIo(io);
+app.use("/api/v0/session", sessionRouter);
+app.use("/api/v0/auth", authRouter);
+
+
+// initializeSocketIo(io);
 
 
 

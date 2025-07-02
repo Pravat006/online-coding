@@ -1,14 +1,11 @@
 import { Router } from "express";
-import { createAcolaborationSession } from "../controllers/session.controller.js";
-import { getAuth, requireAuth } from "@clerk/express";
-
+// import { createAcolaborationSession, joinSession } from "../controllers/session.controller.js";
 
 const router = Router();
 
-
-router.use(requireAuth())
-
-router.route("/create").post(createAcolaborationSession);
+// // 
+// router.route("/create").post(createAcolaborationSession);
+// router.route("/join/:sessionId").post(joinSession);
 
 export default router
 

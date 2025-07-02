@@ -1,4 +1,4 @@
-import connectDB from './db/dbConnect.js';
+
 import { httpServer } from './app.js';
 import dotenv from 'dotenv';
 
@@ -28,11 +28,7 @@ const startServer = () => {
   });
 }
 
-connectDB().then(() => {
-  console.log("MongoDB connected successfully");
-  startServer();
-}).catch((error) => {
-  console.error("MongoDB connection failed:", error);
-  process.exit(1); // Exit the process with failure
-});
+startServer();
+
+
 
