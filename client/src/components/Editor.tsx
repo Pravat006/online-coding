@@ -12,15 +12,18 @@ export default function Editor() {
                 theme: "vs-dark",
                 lineNumbers: "on",
                 minimap: { enabled: true },
+                automaticLayout: true,
+                formatOnType: true,
                 glyphMargin: true,
                 folding: true,
-                wordWrap: "off", // ✅ Prevent weird wrapping/centering
+                wordWrap: "off",
                 scrollbar: {
                     useShadows: false,
                 },
+
                 padding: {
-                    top: 20,
-                    bottom: 20,
+                    top: 5,
+                    bottom: 5,
                 },
             });
 
@@ -29,15 +32,20 @@ export default function Editor() {
     }, []);
 
     return (
-        <div
-            ref={editorRef}
-            style={{
-                height: "400px",
-                width: "800px",
-                textAlign: "left", // ✅ ensures content doesn't center
-                padding: 0,
-                margin: 0,
-            }}
-        />
+        <div className="flex flex-col h-screen ">
+            <h1>hello</h1>
+            <div
+                ref={editorRef}
+                style={{
+                    height: "800px",
+                    width: "800px",
+                    textAlign: "left",
+                    padding: 0,
+                    margin: 0,
+                }}
+            />
+        </div>
+
+
     );
 }
