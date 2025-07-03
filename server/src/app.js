@@ -9,7 +9,7 @@ import { Server } from "socket.io";
 
 import morganMiddleware from "./logger/morgan.js";
 
-// import { initializeSocketIo } from "./socket/socket.js";
+import { initializeSocketIo } from "./socket/socket.js";
 
 
 const app = express();
@@ -40,7 +40,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      maxAge: 24 * 60 * 60 * 1000, // 1 day
+      maxAge: 72 * 60 * 60 * 1000,//3day
       secure: false,
       httpOnly: true
     }
@@ -70,14 +70,14 @@ app.get("/", (req, res) => {
 
 
 
-import sessionRouter from "./routes/session.route.js";
+import roomRouter from "./routes/room.route.js";
 import authRouter from "./routes/auth.route.js";
 
-app.use("/api/v0/session", sessionRouter);
+app.use("/api/v0/session", roomRouter);
 app.use("/api/v0/auth", authRouter);
 
 
-// initializeSocketIo(io);
+initializeSocketIo(io);
 
 
 

@@ -2,7 +2,6 @@
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
     "email" TEXT NOT NULL,
-    "password" TEXT NOT NULL,
     "name" TEXT,
     "avatar" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -13,12 +12,13 @@ CREATE TABLE "User" (
 
 -- CreateTable
 CREATE TABLE "Room" (
+    "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "hostId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "Room_pkey" PRIMARY KEY ("name")
+    CONSTRAINT "Room_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -39,7 +39,7 @@ CREATE INDEX "_RoomParticipants_B_index" ON "_RoomParticipants"("B");
 ALTER TABLE "Room" ADD CONSTRAINT "Room_hostId_fkey" FOREIGN KEY ("hostId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_RoomParticipants" ADD CONSTRAINT "_RoomParticipants_A_fkey" FOREIGN KEY ("A") REFERENCES "Room"("name") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "_RoomParticipants" ADD CONSTRAINT "_RoomParticipants_A_fkey" FOREIGN KEY ("A") REFERENCES "Room"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_RoomParticipants" ADD CONSTRAINT "_RoomParticipants_B_fkey" FOREIGN KEY ("B") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

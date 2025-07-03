@@ -1,82 +1,108 @@
-import { SessionEventEnum } from "../constants.js";
+import { RoomEventEnum } from "../constants/constants.js";
 import User from '../models/user.model.js';
 import { ApiError } from '../utils/ApiError.js';
-import { verifyToken } from '@clerk/clerk-sdk-node';
+import verifyAuthToken from "../utils/verifyAuthToken.js";
 
-const mountJoinSessiobEvent = (socket) => {
-    socket.on(SessionEventEnum.JOINED_EVENT, (sessionId) => {
-        console.log(`User joined session: ${sessionId}`);
-        socket.join(sessionId);
-        socket.emit('sessionJoined', { sessionId });
+const activeRooms = new Map()
+
+const mountCreateRoomEvent = (socket) => {
+    socket.on(RoomEventEnum.CREATED_EVENT, async ({ roomId }) => {
+        console.log(`Room created: ${roomId}`);
+        if (!activeRooms.has(roomId)) {
+            activeRooms.set(roomId, new Set());
+        }
+        activeRooms.get(roomId).add(socket.id);
+        socket.join(roomId);
+        socket.emit(RoomEventEnum.CREATED_EVENT, { roomId, message: "Room created successfully " });
     });
-};
+}
 
-const mountTypingEvent = (socket) => {
-    socket.on(SessionEventEnum.TYPING_EVENT, (sessionId) => {
-        socket.in(sessionId).emit(SessionEventEnum.TYPING_EVENT, sessionId);
+const mountJoinRoomEvent = (socket) => {
+    socket.on(RoomEventEnum.USER_JOINED_EVENT, ({ roomId }) => {
+        console.log(`User joined room: ${roomId}`);
+        if (!activeRooms.has(roomId)) {
+            activeRooms.set(roomId, new Set());
+        }
+        activeRooms.get(roomId).add(socket.id);
+        socket.join(roomId);
+        // socket.emit(event, payload)
+        socket.emit(RoomEventEnum.USER_JOINED_EVENT, { roomId, message: "You have joined the room" });
     });
-};
+}
 
-const stoppedTypingEvent = (socket) => {
-    socket.on(SessionEventEnum.STOP_TYPING_EVENT, (sessionId) => {
-        socket.in(sessionId).emit(SessionEventEnum.STOP_TYPING_EVENT, sessionId);
+const mountLeaveRoomEvent = (socket) => {
+    socket.on(RoomEventEnum.USER_LEFT_EVENT, ({ roomId }) => {
+        console.log(`User left room: ${roomId}`);
+        if (activeRooms.has(roomId)) {
+            activeRooms.get(roomId).delete(socket.id);
+            if (activeRooms.get(roomId).size === 0) {
+                activeRooms.delete(roomId);
+            }
+        }
+        socket.leave(roomId);
+        socket.emit(RoomEventEnum.USER_LEFT_EVENT, { roomId, message: "You have left the room" });
+    }
+    )
+}
+
+const mountSendMessageEvent = (socket) => {
+    socket.on(RoomEventEnum.SEND_MESSAGE_EVENT, ({ roomId, message }) => {
+        console.log(`Message sent in room ${roomId}:`, message);
+        if (activeRooms.has(roomId)) {
+            socket.to(roomId).emit(RoomEventEnum.MESSAGE_EVENT, { roomId, message });
+        }
+        else {
+            console.error(`Room ${roomId} does not exist.`);
+            socket.emit(RoomEventEnum.ERROR_EVENT, { message: "Room does not exist." });
+        }
+
     });
-};
+}
 
-const mountCodeChangeEvent=(socket)=>{
-    socket.on(SessionEventEnum.CODE_CHANGE_EVENT,({sessionId, code})=>{
 
-        // brodcast the code change to other users in the session
-        if(!sessionId || !code) return socket.emit(SessionEventEnum.ERROR_EVENT, "Session ID and code are required.");  
 
-        socket.to(sessionId).emit(SessionEventEnum.CODE_CHANGE_EVENT, code);
-    })
-};
 
-const mountChantMessageEvent= (socket)=>{
-    socket.on(SessionEventEnum.MESSAGE_EVENT,({sessionId, user, message})=>{
-        socket.to(sessionId).emit(SessionEventEnum.MESSAGE_EVENT, {
-            user,
-            message,
-            sessionId
-        });
-    })
-};
 
 const initializeSocketIo = async (io) => {
 
     io.on('connection', async (socket) => {
-        const token = socket.handshake.auth.token;
-        if (!token) return socket.disconnect(true);
 
         try {
-            const decoded = await verifyToken(token); // uses your env key
-            const userId = decoded.sub;
+            const token = socket.handshake.auth.token;
+            console.log("Socket connected with token:", token);
+            if (!token) {
+                return socket.emit(SessionEventEnum.ERROR_EVENT, "Authentication token is required.");
+            }
+            const userId = await verifyAuthToken(token);
+            if (!userId) {
+                return socket.emit(SessionEventEnum.ERROR_EVENT, "Invalid authentication token.");
+            }
 
-            const user = await User.findOne({ clerkId:userId });
+            console.log("Decoded userId from token:", userId);
+
+            const user = await User.findOne({ clerkId: userId });
+            console.log("User found:", user);
             if (!user) return socket.disconnect(true);
 
             socket.user = user; // attach for later events
-            console.log("User connected:", user?.name);
+            console.log("User connected:", user?.firstName);
 
-            // common events to be mount on socket initialization
-            mountJoinSessiobEvent(socket);
-            mountTypingEvent(socket);
-            stoppedTypingEvent(socket);
-            mountCodeChangeEvent(socket);
-            mountChantMessageEvent(socket);
+            // mount events
+            mountCreateRoomEvent(socket);
+            mountJoinRoomEvent(socket);
+            mountLeaveRoomEvent(socket);
+            mountSendMessageEvent(socket);
 
-
-        socket.on(SessionEventEnum.DISCONNECTED_EVENT, () => {
-                console.log(`User disconnected: ${user.name}`);
-                if(socket?.user?._id){
+            socket.on(SessionEventEnum.DISCONNECTED_EVENT, () => {
+                console.log(`User disconnected: ${user.firstName}`);
+                if (socket?.user?._id) {
                     socket.leave(socket?.user._id);
                 }
             });
 
 
         } catch (err) {
-            socket.emit(SessionEventEnum.ERROR_EVENT, 
+            socket.emit(SessionEventEnum.ERROR_EVENT,
                 err?.message || "Something went wrong while connection to the socket , please try again later."
             )
             throw new ApiError(500, "Socket connection error", [err.message]);
@@ -85,13 +111,18 @@ const initializeSocketIo = async (io) => {
 }
 
 
-const emitSocketEvent= (req, roomId, event, data)=>{
-    req.app.get("io").in(roomId).emit(event, data);
+function emitSocketEvent(req, roomId, event, payload) {
+    const io = req.app.get("io");
+    console.log("emitSocketEvent called with:", { roomId, event, payload });
+    if (!io) {
+        console.error("Socket.IO instance not found on app!");
+        return;
+    }
+    // socket.emit(event, payload)
+    io.to(roomId.toString()).emit(event, payload);
 }
 
 export {
+    emitSocketEvent,
     initializeSocketIo,
-    emitSocketEvent
 }
-
-

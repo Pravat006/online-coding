@@ -9,8 +9,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 // user model
@@ -21,12 +22,13 @@ model User {
   avatar           String?
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
-  Room             Room[]
+  hostedRooms      Room[]
   participantRooms Room[]   @relation("RoomParticipants")
 }
 
 model Room {
-  name         String   @id @default(uuid())
+  id           String   @id @default(uuid())
+  name         String
   host         User     @relation(fields: [hostId], references: [id])
   hostId       String
   participants User[]   @relation("RoomParticipants")
