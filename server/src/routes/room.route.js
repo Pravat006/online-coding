@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { createAcolaborationRoom, joinColaborationRoom, leaveColaborationRoom, deleteColaborationRoom } from "../controllers/room.controller.js";
-import isAuthenticated from "../middleware/auth.middleware.js";
+import { isAuthenticated } from "../middleware/auth.middleware.js";
 const router = Router();
 
 router.use(isAuthenticated);

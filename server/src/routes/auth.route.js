@@ -39,8 +39,10 @@ router.get("/user/data", (req, res) => {
 
 
 if (process.env.NODE_ENV !== 'production') {
+    // Test-only authentication endpoint (Development only!)
     router.post('/test-login', async (req, res) => {
         try {
+            // Find a test user in database
             const user = await prisma.user.findFirst();
 
             if (!user) {
@@ -48,13 +50,15 @@ if (process.env.NODE_ENV !== 'production') {
             }
 
 
+            // Log the user in programmatically
             req.login(user, (err) => {
                 if (err) {
                     return res.status(500).json({ success: false, message: err.message });
                 }
-                return res.status(200).json({ success: true, user });
+                return res.status(200).json({ success: true, message: "Test login successful", user });
             });
         } catch (error) {
+            console.error("Test login error:", error);
             res.status(500).json({ success: false, message: error.message });
         }
     });

@@ -1,5 +1,5 @@
 import { RoomEventEnum } from "../constants/constants.js";
-import User from '../models/user.model.js';
+import prisma from "../db/client.js";
 import { ApiError } from '../utils/ApiError.js';
 import verifyAuthToken from "../utils/verifyAuthToken.js";
 
@@ -80,7 +80,9 @@ const initializeSocketIo = async (io) => {
 
             console.log("Decoded userId from token:", userId);
 
-            const user = await User.findOne({ clerkId: userId });
+            const user = await prisma.user.findUnique({
+                where: { id: userId }
+            });
             console.log("User found:", user);
             if (!user) return socket.disconnect(true);
 
@@ -94,10 +96,14 @@ const initializeSocketIo = async (io) => {
             mountSendMessageEvent(socket);
 
             socket.on(SessionEventEnum.DISCONNECTED_EVENT, () => {
-                console.log(`User disconnected: ${user.firstName}`);
+                console.log(`User disconnected: ${user.name}`);
                 if (socket?.user?._id) {
-                    socket.leave(socket?.user._id);
+                    socket.leave(socket?.user.id);
                 }
+                socket.disconnect(true);
+                socket.emit(SessionEventEnum.DISCONNECTED_EVENT, {
+                    message: "You have been disconnected from the socket."
+                })
             });
 
 

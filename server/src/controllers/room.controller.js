@@ -8,8 +8,8 @@ import { RoomEventEnum } from "../constants/constants.js";
 
 
 const createAcolaborationRoom = asyncHandler(async (req, res) => {
-    const { roomName } = req.body
-        ;
+    const { roomName } = req.body;
+    const userId = req.user.id;
     console.log("userId in controller : ", userId);
     if (!req.user) {
         throw new ApiError(401, "Unauthorized - Authentication required", []);
@@ -20,7 +20,6 @@ const createAcolaborationRoom = asyncHandler(async (req, res) => {
 
     // Check authentication
 
-    const userId = req.user.id;
     if (!userId) {
         throw new ApiError(401, "Unauthorized - Authentication required", []);
     }
@@ -28,9 +27,6 @@ const createAcolaborationRoom = asyncHandler(async (req, res) => {
         data: {
             name: roomName,
             hostId: userId,
-            participants: {
-                connect: { id: userId }
-            },
         },
         include: {
             participants: true,
@@ -156,7 +152,7 @@ const deleteColaborationRoom = asyncHandler(async (req, res) => {
     if (!userId) {
         throw new ApiError(401, "Unauthorized - Authentication required", []);
     }
-    const room = await prisma.room.findunique({
+    const room = await prisma.room.findUnique({
         where: { id: roomId },
     });
     if (!room) {
