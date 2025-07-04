@@ -18,7 +18,7 @@ const mountCreateRoomEvent = (socket) => {
 }
 
 const mountJoinRoomEvent = (socket) => {
-    socket.on(RoomEventEnum.USER_JOINED_EVENT, ({ roomId }) => {
+    socket.on(RoomEventEnum.USER_JOINED_EVENT, ({ roomId, user }) => {
         console.log(`User joined room: ${roomId}`);
         if (!activeRooms.has(roomId)) {
             activeRooms.set(roomId, new Set());
@@ -26,12 +26,12 @@ const mountJoinRoomEvent = (socket) => {
         activeRooms.get(roomId).add(socket.id);
         socket.join(roomId);
         // socket.emit(event, payload)
-        socket.emit(RoomEventEnum.USER_JOINED_EVENT, { roomId, message: "You have joined the room" });
+        socket.emit(RoomEventEnum.USER_JOINED_EVENT, { roomId, message: `${user.name} has joined the room`, user });
     });
 }
 
 const mountLeaveRoomEvent = (socket) => {
-    socket.on(RoomEventEnum.USER_LEFT_EVENT, ({ roomId }) => {
+    socket.on(RoomEventEnum.USER_LEFT_EVENT, ({ roomId, user }) => {
         console.log(`User left room: ${roomId}`);
         if (activeRooms.has(roomId)) {
             activeRooms.get(roomId).delete(socket.id);
@@ -40,7 +40,7 @@ const mountLeaveRoomEvent = (socket) => {
             }
         }
         socket.leave(roomId);
-        socket.emit(RoomEventEnum.USER_LEFT_EVENT, { roomId, message: "You have left the room" });
+        socket.emit(RoomEventEnum.USER_LEFT_EVENT, { roomId, message: `${user.name} has left the room` });
     }
     )
 }

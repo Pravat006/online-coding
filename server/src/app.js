@@ -73,7 +73,7 @@ app.get("/", (req, res) => {
 import roomRouter from "./routes/room.route.js";
 import authRouter from "./routes/auth.route.js";
 
-app.use("/api/v0/session", roomRouter);
+app.use("/api/v0/room", roomRouter);
 app.use("/api/v0/auth", authRouter);
 
 

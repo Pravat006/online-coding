@@ -1,6 +1,7 @@
 import passport from "passport";
 import { Router } from "express";
 import "../passport/index.js"; // Ensure the Google strategy is registered before using it
+import prisma from "../db/client.js";
 
 const router = Router();
 
@@ -35,6 +36,29 @@ router.get("/user/data", (req, res) => {
     }
 
 })
+
+
+if (process.env.NODE_ENV !== 'production') {
+    router.post('/test-login', async (req, res) => {
+        try {
+            const user = await prisma.user.findFirst();
+
+            if (!user) {
+                return res.status(404).json({ success: false, message: "No test user found" });
+            }
+
+
+            req.login(user, (err) => {
+                if (err) {
+                    return res.status(500).json({ success: false, message: err.message });
+                }
+                return res.status(200).json({ success: true, user });
+            });
+        } catch (error) {
+            res.status(500).json({ success: false, message: error.message });
+        }
+    });
+}
 
 export default router;
 

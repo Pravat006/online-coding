@@ -13,21 +13,16 @@ try {
     passport.deserializeUser(async (id, next) => {
         try {
             const dbUser = await prisma.user.findUnique({
-                where: {
-                    id: id
-                }
+                where: { id: id }
             });
             if (dbUser) {
                 next(null, dbUser);
             } else {
-                next(new ApiError(404, "User does not exist", null));
+                next(new ApiError(404, "User does not exist"), null);
             }
         } catch (error) {
-            next(new ApiError(
-                500,
-                "something went wrong while deserializing user. Error: " + error,
-            ),
-                null);
+            // Fix the formatting so the arguments are properly passed
+            next(new ApiError(500, "Something went wrong while deserializing user: " + error), null);
         }
     })
 
