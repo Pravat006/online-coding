@@ -3,7 +3,8 @@ import React from 'react';
 const Login: React.FC = () => {
     const handleGoogleLogin = () => {
         // Google OAuth logic here
-        console.log('Google Login button clicked!');
+        // console.log(import.meta.env.GOOGLE_AUTH_URL);
+        window.location.href = import.meta.env.VITE_GOOGLE_AUTH_URL;
     };
 
     const handleGithubLogin = () => {
@@ -11,16 +12,9 @@ const Login: React.FC = () => {
         console.log('Github Login button clicked!');
     };
 
-    const handleEmailLogin = (e: React.FormEvent) => {
-        e.preventDefault();
-        // Email login logic here
-        console.log('Email login submitted!');
-    };
-
     return (
         <div className='login-card'>
-            <form
-                onSubmit={handleEmailLogin}
+            <div
                 className="flex flex-col items-start justify-center gap-5 rounded-xl border-2 border-gray-900 bg-white/80 shadow-[4px_4px_0_0_rgba(55,65,81,1)] px-8 py-10 w-full max-w-sm"
             >
                 <p className="font-bold text-gray-900 text-xl mb-2 flex flex-col w-full">
@@ -56,7 +50,7 @@ const Login: React.FC = () => {
                     </span>
                 </button>
 
-            </form>
+            </div>
         </div>
     );
 };
