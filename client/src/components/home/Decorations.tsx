@@ -3,10 +3,10 @@ function Decorations() {
     return (
         <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
 
-            <div className="absolute top-[5%] right-[10%] w-64 h-64 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
-            <div className="absolute top-[15%] left-[10%] w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
-            <div className="absolute bottom-[15%] right-[20%] w-80 h-80 bg-pink-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
-            <div className="absolute bottom-[10%] left-[15%] w-72 h-72 bg-yellow-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-6000"></div>
+            <div className="absolute top-[5%] right-[10%] w-64 h-64 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-bounce"></div>
+            <div className="absolute top-[15%] left-[10%] w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-bounce animation-delay-2000"></div>
+            <div className="absolute bottom-[15%] right-[20%] w-80 h-80 bg-pink-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-bounce animation-delay-4000"></div>
+            <div className="absolute bottom-[10%] left-[15%] w-72 h-72 bg-yellow-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-bounce animation-delay-6000"></div>
 
             {/* Wavy shapes */}
             <svg className="absolute top-0 left-0 w-full opacity-20" viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg">
@@ -14,7 +14,7 @@ function Decorations() {
             </svg>
 
             {/* Triangle patterns */}
-            <div className="absolute bottom-0 right-0 w-64 h-64 opacity-20">
+            <div className="absolute bottom-0 right-0 w-64 h-64 opacity-20 ">
                 <svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
                     <path fill="#3B82F6" d="M0,0 L100,0 L50,100 Z"></path>
                 </svg>

@@ -43,7 +43,7 @@ function CreateMeetBtn() {
                 New Meeting
             </button>
 
-            {/* Google Meet Style Popover */}
+
             <div
                 ref={popoverRef}
                 className={`absolute top-full mt-2 left-0 w-96 bg-gray-100 rounded-lg shadow-xl z-50 p-2

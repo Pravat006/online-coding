@@ -1,11 +1,27 @@
 import Decorations from "../home/Decorations"
-// import Feature from "../home/Feature"
-// import Footer from "../home/Footer"
-// import Navbar from "../home/Navbar"
 import Hero from "../home/Hero"
-// import Review from "../home/Review"
+
+// import axios from "axios"
+// import { useEffect } from "react"
+
+
 
 function Home() {
+
+    // useEffect(() => {
+
+    //     axios.get("http://localhost:5054/api/v0/auth/user/data", {
+    //         withCredentials: true
+    //     }).then((res) => {
+    //         console.log("User data fetched successfully");
+    //         console.log(res);
+    //         console.log(res.data);
+    //     }).catch((err) => {
+    //         console.error(err);
+    //     });
+    // }, []);
+
+
     return (
         <div className="min-h-screen bg-white text-gray-800 font-mono w-full relative overflow-hidden">
 
