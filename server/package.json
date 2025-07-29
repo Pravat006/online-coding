@@ -5,10 +5,14 @@
   "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "start": "node src/index.js",
-    "dev": "nodemon -r dotenv/config --experimental-json-modules src/index.js",
+    "dev": "nodemon --watch src --ext ts,js --exec tsx src/index.ts",
+    "start": "NODE_ENV=production tsx src/index.ts",
+    "build": "tsc --noEmit",
     "generate": "prisma generate",
     "postinstall": "prisma generate"
+  },
+  "_moduleAliases": {
+    "@": "src"
   },
   "keywords": [],
   "author": "Pravat Behera",
@@ -24,6 +28,7 @@
     "express-session": "^1.18.1",
     "google-auth-library": "^10.1.0",
     "http": "^0.0.1-security",
+    "module-alias": "^2.2.3",
     "mongodb": "^6.17.0",
     "morgan": "^1.10.0",
     "multer": "^2.0.1",
@@ -38,8 +43,18 @@
   },
   "devDependencies": {
     "@prisma/client": "^6.11.0",
+    "@types/express": "^5.0.3",
+    "@types/express-session": "^1.18.2",
+    "@types/module-alias": "^2.0.4",
+    "@types/morgan": "^1.9.10",
+    "@types/node": "^24.1.0",
+    "@types/passport": "^1.0.17",
+    "@types/passport-google-oauth20": "^2.0.16",
     "nodemon": "^3.1.10",
     "prettier": "^3.5.3",
-    "prisma": "^6.11.0"
+    "prisma": "^6.11.0",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3"
   }
 }

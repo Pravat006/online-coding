@@ -1,16 +1,14 @@
 import express from "express";
 import cors from "cors";
-import dotenv from "dotenv";
 import session from "express-session";
 import passport from "passport";
 import bodyParser from "body-parser";
 import { createServer } from "http";
 import { Server } from "socket.io";
-
-import morganMiddleware from "./logger/morgan.js";
-
-import { initializeSocketIo } from "./socket/socket.js";
-
+import morganMiddleware from "./logger/morgan";
+import { initializeSocketIo } from "./socket/socket";
+import router from "./routes/index";
+import { errorConvertor, errorHandler } from "./handler/ErrorHandler";
 
 const app = express();
 const httpServer = createServer(app)
@@ -24,19 +22,16 @@ const io = new Server(httpServer, {
 })
 
 app.set("io", io);
+initializeSocketIo(io)
 
 app.use(cors({
   origin: process.env.CORS_ORIGIN || "http://localhost:3000",
   credentials: true
 }));
 
-// Load environment variables
-dotenv.config();
-
-
 app.use(
   session({
-    secret: process.env.EXPRESS_SESSION_SECRET,
+    secret: process.env.EXPRESS_SESSION_SECRET || "fallback-secret-key-change-in-production",
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -56,43 +51,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Static files (if any)
 app.use(express.static("public"));
-
-
-// Logger
 app.use(morganMiddleware);
-
-
-// Routes
-app.get("/", (req, res) => {
-  res.status(200).json({ message: "Welcome to the Collaboration App API" });
-});
+app.use(router)
+app.use(errorConvertor)
+app.use(errorHandler)
 
 
 
-
-import roomRouter from "./routes/room.route.js";
-import authRouter from "./routes/auth.route.js";
-
-app.use("/api/v0/room", roomRouter);
-app.use("/api/v0/auth", authRouter);
-
-
-initializeSocketIo(io);
-
-
-
-// Global error handler
-app.use((err, req, res, next) => {
-  console.error("GLOBAL ERROR:", err);
-  res.status(err.statusCode || 500).json({
-    success: false,
-    message: err.message || "Internal Server Error",
-    errors: err.errors || []
-  });
-});
-
-
-
-export {
-  httpServer
-}
+export default httpServer;

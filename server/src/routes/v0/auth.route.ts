@@ -1,7 +1,8 @@
 import passport from "passport";
-import { Router } from "express";
-import "../passport/index.js"; // Ensure the Google strategy is registered before using it
-import prisma from "../db/client.js";
+import { Request, Response, Router } from "express";
+import "../../passport/index";
+import prisma from "@/db/client";
+import { User } from "@/@types/interface";
 
 const router = Router();
 
@@ -11,7 +12,7 @@ router.route("/google")
         scope: ["profile", "email"],
     }),
 
-        (req, res) => {
+        (_, res: Response) => {
             res.send("Redirecting to Google...");
         });
 
@@ -19,10 +20,14 @@ router.route("/google")
 router.route("/google/callback")
     .get(passport.authenticate("google", {
         failureRedirect: `${process.env.CLIENT_URL}/login/failed`,
-        successRedirect: process.env.CLIENT_URL || "http://localhost:3000", // Redirect to the frontend's root on success
-    }));
+        successRedirect: process.env.CLIENT_URL || "http://localhost:3000",
+    }
+    )
+    );
 
-router.get("/user/data", (req, res) => {
+router.get("/user/data", (req: Request, res: Response) => {
+
+    console.log("user : ", req)
     if (req.user) {
         res.status(200).json({
             message: "User data retrieved successfully",
@@ -37,10 +42,10 @@ router.get("/user/data", (req, res) => {
 
 })
 
-
+//
 if (process.env.NODE_ENV !== 'production') {
     // Test-only authentication endpoint (Development only!)
-    router.post('/test-login', async (req, res) => {
+    router.post("/test-login", async (req: Request, res: Response) => {
         try {
             // Find a test user in database
             const user = await prisma.user.findFirst();
@@ -51,7 +56,10 @@ if (process.env.NODE_ENV !== 'production') {
 
 
             // Log the user in programmatically
-            req.login(user, (err) => {
+            req.login({
+                id: user.id,
+                name: user.name || undefined
+            }, (err) => {
                 if (err) {
                     return res.status(500).json({ success: false, message: err.message });
                 }
@@ -59,13 +67,10 @@ if (process.env.NODE_ENV !== 'production') {
             });
         } catch (error) {
             console.error("Test login error:", error);
-            res.status(500).json({ success: false, message: error.message });
+            const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
+            res.status(500).json({ success: false, message: errorMessage });
         }
     });
 }
 
 export default router;
-
-
-
-

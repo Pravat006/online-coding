@@ -1,6 +1,17 @@
 import winston from "winston";
+
+// Define custom severity levels type
+interface CustomLevels {
+    [key: string]: number;
+    error: number;
+    warn: number;
+    info: number;
+    http: number;
+    debug: number;
+}
+
 // Define your severity levels.
-const levels = {
+const levels: CustomLevels = {
     error: 0,
     warn: 1,
     info: 2,
@@ -8,20 +19,23 @@ const levels = {
     debug: 4,
 };
 
-// This method set the current severity based on
-// the current NODE_ENV: show all the log levels
-// if the server was run in development mode; otherwise,
-// if it was run in production, show only warn and error messages.
-const level = () => {
+// Define level colors type
+interface LevelColors {
+    [key: string]: string;
+    error: string;
+    warn: string;
+    info: string;
+    http: string;
+    debug: string;
+}
+
+const level = (): string => {
     const env = process.env.NODE_ENV || "development";
     const isDevelopment = env === "development";
     return isDevelopment ? "debug" : "warn";
 };
 
-// Define different colors for each level.
-// Colors make the log message more visible,
-// adding the ability to focus or ignore messages.
-const colors = {
+const colors: LevelColors = {
     error: "red",
     warn: "yellow",
     info: "blue",
@@ -29,11 +43,8 @@ const colors = {
     debug: "white",
 };
 
-// Tell winston that you want to link the colors
-// defined above to the severity levels.
 winston.addColors(colors);
 
-// Chose the aspect of your log customizing the log format.
 const format = winston.format.combine(
     // Add the message timestamp with the preferred format
     winston.format.timestamp({ format: "DD MMM, YYYY - HH:mm:ss:ms" }),
@@ -46,8 +57,7 @@ const format = winston.format.combine(
 );
 
 // Define which transports the logger must use to print out messages.
-// In this example, we are using three different transports
-const transports = [
+const transports: winston.transport[] = [
     // Allow the use the console to print the messages
     new winston.transports.Console(),
     new winston.transports.File({ filename: "logs/error.log", level: "error" }),

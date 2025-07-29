@@ -4,7 +4,7 @@ export async function getAuthCookie() {
     try {
         console.log("Attempting to get auth cookie from test login...");
 
-        const response = await axios.post('http://localhost:5054/api/v0/auth/test-login', {}, {
+        const response = await axios.post('http://localhost:5054/v0/auth/test-login', {}, {
             withCredentials: true
         });
 
@@ -16,9 +16,10 @@ export async function getAuthCookie() {
         const cookies = response.headers['set-cookie'];
         console.log("Server returned cookies:", cookies);
 
-        return cookies; // Return all cookies
+        // Join cookies into a single string for Supertest
+        return cookies.join('; ');
     } catch (error) {
-        console.error('Failed to authenticate for tests:', error.message);
+        console.error('Failed to authenticate for tests:', error);
         return null;
     }
 }

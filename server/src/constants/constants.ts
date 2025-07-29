@@ -1,4 +1,12 @@
 
+// export const RoomJoinTypeEnum = Object.freeze({
+//     // a user can create a room and join instantly after a creating a room
+//     INSTANT_JOIN: "instant-join",
+//     // also user have option to create a scheduled room , in this case the backend will create a room and provide the room code to the client
+//     SCHEDULED_JOIN: "scheduled-join",
+// })
+
+
 
 export const RoomEventEnum = Object.freeze({
 
