@@ -1,76 +1,87 @@
-import { useRef, useState, useEffect } from "react"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { LogOut } from "lucide-react"
+// import React from 'react';
+import { useAuthStore } from '../../store/authStore';
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { LogOut, User, Mail } from 'lucide-react';
 
-function Profile() {
-    const [open, setOpen] = useState(false)
-    const popoverRef = useRef<HTMLDivElement>(null)
-    const buttonRef = useRef<HTMLButtonElement>(null)
+export default function UserProfile() {
+    const { user, isAuthenticated, logout } = useAuthStore();
 
-    const togglePopup = () => {
-        setOpen((prev) => !prev)
+    if (!isAuthenticated || !user) {
+        return null;
     }
 
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (
-                popoverRef.current && !popoverRef.current.contains(event.target as Node) &&
-                buttonRef.current && !buttonRef.current.contains(event.target as Node)
-            ) {
-                setOpen(false);
-            }
-        };
+    const handleLogout = () => {
+        logout();
+    };
 
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, []);
+
 
     return (
-        <div className="relative inline-block">
-            <button
-                ref={buttonRef}
-                onClick={togglePopup}
-                className="rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            >
-                <Avatar>
-                    <AvatarImage src="https://lh3.googleusercontent.com/a/ACg8ocL2UYi_GrE8NyxD_pBq6CnlE92y1wkK7rcukYI2DjblZZmVlYpG=s96-c" />
-                    <AvatarFallback>{"PB"}</AvatarFallback>
-                </Avatar>
-            </button>
-
-            <div
-                ref={popoverRef}
-                className={`absolute right-0 mt-4 w-70 origin-top-right rounded-xl bg-white shadow-2xl ring-1 ring-black ring-opacity-5 transition-all duration-200 ease-out
-                            ${open ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}
-            >
-                <div className="flex flex-col items-center p-6">
-                    <span className="text-sm text-gray-500 mb-4">beherapravat836@gmail.com</span>
-
-                    <div className="relative mb-4">
-                        <Avatar className="h-24 w-24 border-2 border-white shadow-md">
-                            <AvatarImage src="https://lh3.googleusercontent.com/a/ACg8ocL2UYi_GrE8NyxD_pBq6CnlE92y1wkK7rcukYI2DjblZZmVlYpG=s96-c" />
-                            <AvatarFallback>{"PB"}</AvatarFallback>
+        <Popover>
+            <PopoverTrigger asChild>
+                <button className="flex items-center space-x-2 p-2 rounded-full hover:bg-gray-100 transition-colors">
+                    <Avatar className="h-8 w-8">
+                        <AvatarImage
+                            src={user.avatar || undefined}
+                            alt={user.name}
+                        />
+                        <AvatarFallback className="bg-blue-500 text-white text-sm font-medium">
+                            {user.name}
+                        </AvatarFallback>
+                    </Avatar>
+                </button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80 p-4" align="end">
+                <div className="space-y-4">
+                    {/* User Info Header */}
+                    <div className="flex items-center space-x-3">
+                        <Avatar className="h-12 w-12">
+                            <AvatarImage
+                                src={user.avatar || undefined}
+                                alt={user.name}
+                            />
+                            <AvatarFallback className="bg-blue-500 text-white text-lg font-medium">
+                                {user?.name}
+                            </AvatarFallback>
                         </Avatar>
+                        <div className="flex-1 min-w-0">
+                            <h3 className="text-sm font-semibold text-gray-900 truncate">
+                                {user?.name}
+                            </h3>
+                            <p className="text-sm text-gray-500 truncate">
+                                {user.email}
+                            </p>
+                        </div>
                     </div>
-                    <h3 className="text-xl font-semibold text-gray-800">Hi, Pravat!</h3>
 
+                    {/* User Details */}
+                    <div className="space-y-2">
+                        <div className="flex items-center space-x-2 text-sm text-gray-600">
+                            <User className="h-4 w-4" />
+                            <span>User ID: {user.id}</span>
+                        </div>
+                        <div className="flex items-center space-x-2 text-sm text-gray-600">
+                            <Mail className="h-4 w-4" />
+                            <span>{user.email}</span>
+                        </div>
+                    </div>
+
+                    {/* Divider */}
+                    <div className="border-t border-gray-200" />
+
+                    {/* Actions */}
+                    <div className="space-y-1">
+                        <button
+                            onClick={handleLogout}
+                            className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                        >
+                            <LogOut className="h-4 w-4" />
+                            <span>Sign out</span>
+                        </button>
+                    </div>
                 </div>
-
-                <div className="border-t border-gray-100">
-                    <ul className="py-2 text-gray-700">
-                        <li>
-                            <a href="#" className="flex items-center px-4 py-2 text-sm hover:bg-gray-100">
-                                <LogOut className="mr-3 h-5 w-5 text-gray-400" />
-                                <span>Log out</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    )
-}
-
-export default Profile;
+            </PopoverContent>
+        </Popover>
+    );
+} 

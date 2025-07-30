@@ -1,33 +1,36 @@
-import CreateMeetBtn from "../root/CreateMeetBtn"
-import JoinMeet from "../root/JoinMeet"
-import Carousel from "./Carousel"
+import { Shield, Clock } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import MeetingControls from "./MeetingControls"
 
 function Hero() {
     return (
-        <main className="relative flex flex-col items-center justify-center min-h-[calc(100vh-80px)] p-6 overflow-hidden">
-            <div className="relative z-10 flex flex-col lg:flex-row justify-between items-center w-full max-w-[90vw] px-4 py-8 rounded-lg">
+        <section className="container mx-auto px-4 py-20">
+            <div className="text-center max-w-4xl mx-auto">
+                <Badge variant="secondary" className="mb-4">
+                    🚀 Now with HD Video Quality
+                </Badge>
+                <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
+                    Connect, Collaborate, and Create Together
+                </h1>
+                <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+                    Experience seamless video meetings with crystal-clear quality. Join millions who trust our platform for
+                    their most important conversations.
+                </p>
 
-                <div className="flex justify-center items-center h-full">
-
-                    <div className="create-join-meet flex flex-col items-center justify-center space-y-6 px-10 max-w-2xl border-b-2 border-black pb-20">
-                        <h1 className="text-2xl font-extrabold tracking-tight mb-4 leading-tight bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-600 text-center">
-                            Seamless Collaboration, Crafted for Developers.
-                        </h1>
-                        <p className="text-xl text-gray-700 mb-8 text-center">
-                            From Pair Programming to Project Syncs, CodeMeet Elevates Your Team's Workflow.
-                        </p>
-                        <div className="w-full flex flex-row items-center justify-center space-x-4">
-                            <CreateMeetBtn />
-                            <JoinMeet />
-                        </div>
+                {/* Meeting Controls */}
+                <MeetingControls />
+                <div className="mt-12 flex flex-col sm:flex-row gap-4 justify-center items-center">
+                    <div className="flex items-center gap-2 text-sm text-gray-500">
+                        <Shield className="h-4 w-4" />
+                        End-to-end encrypted
                     </div>
-
-                </div>
-                <div className="feature-carousel">
-                    <Carousel />
+                    <div className="flex items-center gap-2 text-sm text-gray-500">
+                        <Clock className="h-4 w-4" />
+                        No time limits
+                    </div>
                 </div>
             </div>
-        </main>
+        </section>
     )
 }
 
