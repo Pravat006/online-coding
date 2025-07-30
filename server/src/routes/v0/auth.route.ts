@@ -2,7 +2,7 @@ import passport from "passport";
 import { Request, Response, Router } from "express";
 import "../../passport/index";
 import prisma from "@/db/client";
-import { User } from "@/@types/interface";
+// import { User } from "@/@types/interface";
 
 const router = Router();
 
@@ -29,6 +29,7 @@ router.get("/user/data", (req: Request, res: Response) => {
 
     console.log("user : ", req)
     if (req.user) {
+        // console.log("user : ", req.user)
         res.status(200).json({
             message: "User data retrieved successfully",
             user: req.user
@@ -41,6 +42,26 @@ router.get("/user/data", (req: Request, res: Response) => {
     }
 
 })
+
+router.post("/logout", (req: Request, res: Response) => {
+    req.logout((err) => {
+        if (err) {
+            console.error("Logout error:", err);
+            return res.status(500).json({
+                success: false,
+                message: "Error during logout"
+            });
+        }
+
+        // Clear the session cookie
+        res.clearCookie('connect.sid');
+
+        res.status(200).json({
+            success: true,
+            message: "Logged out successfully"
+        });
+    });
+});
 
 //
 if (process.env.NODE_ENV !== 'production') {

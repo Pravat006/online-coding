@@ -2,35 +2,33 @@ import passport, { Profile } from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { ApiError } from "../utils/ApiError";
 import prisma from "../db/client";
-import { UserModel, AuthenticatedUser } from "@/@types/passport";
+import { UserModel } from "@/@types/passport";
 // import { DeserializedUser, User } from "@/@types/interface";
 
 
 try {
   // Serialize user into session
   passport.serializeUser((user: any, done) => {
-    // Handle both direct user objects and our wrapped AuthenticatedUser objects
-    const userId: String = user.user?.id || user.id;
+    const userId: String = user?.id || user.id;
     done(null, userId);
   });
 
   // Deserialize user from session
   passport.deserializeUser(async (id: string, done) => {
-    // @ts-ignore
-    // @ts-ignore
-    // @ts-ignore
     try {
       const user = await prisma.user.findUnique({
         where: { id }
-      });
+      }) as UserModel | null;
 
       if (!user) {
         return done(new ApiError(404, "User not found"), null);
       }
-      const deserializedUser = {
-        id: id,
-      }
-      done(null, deserializedUser);
+      // Convert null values to undefined to satisfy User type
+      const userWithoutNull = {
+        ...user,
+        name: user.name || undefined
+      };
+      done(null, userWithoutNull);
     } catch (error) {
       done(new ApiError(500, `Error deserializing user: ${error}`), null);
     }
@@ -41,7 +39,7 @@ try {
     clientID: process.env.GOOGLE_CLIENT_ID!,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     callbackURL: process.env.GOOGLE_CALLBACK_URL!,
-  }, async (accessToken: string, _, profile: Profile, done: any) => {
+  }, async (_, __, profile: Profile, done: any) => {
     try {
       // Check for existing user
       let user = await prisma.user.findUnique({
@@ -60,13 +58,7 @@ try {
         }) as UserModel;
       }
 
-
-      // Return authenticated user with token
-      const authenticatedUser: AuthenticatedUser = {
-        user,
-        token: accessToken,
-      };
-      return done(null, authenticatedUser);
+      return done(null, user);
     } catch (error: any) {
       console.error("Authentication error:", error);
       return done(error);

@@ -49,15 +49,3 @@ export interface UserModel {
     updatedAt?: Date;
 }
 
-// Type for the user object stored in req.user after authentication
-export interface AuthenticatedUser {
-  user:{
-    id: string;
-    name: string | null;
-    email: string;
-    avatar: string | null;
-    createdAt?: Date;
-    updatedAt?: Date;
-  },
-  token: string;
-}
