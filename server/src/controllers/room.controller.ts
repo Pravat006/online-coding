@@ -77,7 +77,7 @@ const createColaborationRoom = AsyncHandler(async (req: Request, res: Response) 
 
     return res.status(201).json({
         status: "success",
-        data: createdRoom,
+        data: roomId,
         message: "Collaboration room created successfully"
     })
 });
@@ -168,18 +168,6 @@ const leaveColaborationRoom = AsyncHandler(async (req: Request, res: Response) =
     if (!room.participants.some(participant => participant.id === userId)) {
         throw new ApiError(400, "You are not a participant in this room", []);
     }
-    // const updatedRoom = await prisma.room.update({
-    //     where: { id: roomId },
-    //     data: {
-    //         participants: {
-    //             disconnect: { id: userId }
-    //         }
-    //     },
-    //     include: {
-    //         participants: true,
-    //         host: true
-    //     }
-    // });
     emitSocketEvent({
         req,
         roomId,

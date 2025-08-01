@@ -1,19 +1,19 @@
 import { Router } from "express";
-import * as roomController from "../../controllers/room.controller";
+import { createColaborationRoom, deleteColaborationRoom, joinColaborationRoom, leaveColaborationRoom } from "../../controllers/room.controller";
 // import { isAuthenticated } from "../middleware/auth.middleware.js";
 const router = Router();
 
 // router.use(isAuthenticated);
 
 router.route("/create")
-    .post(roomController.createColaborationRoom);
+    .post(createColaborationRoom);
 router.route("/join/:roomId")
-    .post(roomController.joinColaborationRoom);
+    .post(joinColaborationRoom);
 router.route("/leave/:roomId")
-    .post(roomController.leaveColaborationRoom);
+    .post(leaveColaborationRoom);
 router.route("/delete/:roomId")
-    .delete(roomController.deleteColaborationRoom);
+    .delete(deleteColaborationRoom);
 
 
-export default router
+export default router;
 

@@ -1,16 +1,10 @@
-import axios from 'axios';
+import Axios from '@/config/axio-instance';
+
+// Define User and response types for type safety
 
 const API_BASE_URL: string = import.meta.env.VITE_SERVER_BASE_URL || 'http://localhost:5054/v0';
 
-export interface User {
-    id: string;
-    name: string;
-    email: string;
-    avatar: string;
-}
-
 export const authService = {
-    // Initiate Google OAuth login
     loginWithGoogle: () => {
         window.location.href = `${API_BASE_URL}/auth/google`;
     },
@@ -18,11 +12,8 @@ export const authService = {
     // Handle OAuth callback and get user data
     handleOAuthCallback: async (): Promise<User | null> => {
         try {
-            const response = await axios.get(`${API_BASE_URL}/auth/user/data`, {
-                withCredentials: true
-            });
-
-            if (response.data.user) {
+            const response = await Axios.get<UserDataResponse>('/auth/user/data');
+            if (response && response.data && response.data.user) {
                 return response.data.user;
             }
             return null;
@@ -35,11 +26,10 @@ export const authService = {
     // Get current user data
     getCurrentUser: async (): Promise<User | null> => {
         try {
-            const response = await axios.get(`${API_BASE_URL}/auth/user/data`, {
-                withCredentials: true
-            });
+            const response = await Axios.get<UserDataResponse>('/auth/user/data');
+            console.log('Current user data:', response.data);
 
-            if (response.data.user) {
+            if (response && response.data && response.data.user) {
                 return response.data.user;
             }
             return null;
@@ -52,14 +42,11 @@ export const authService = {
     // Logout user
     logout: async (): Promise<void> => {
         try {
-            const response = await axios.post(`${API_BASE_URL}/auth/logout`, {}, {
-                withCredentials: true
-            });
-
-            if (response.data.success) {
+            const response = await Axios.post<LogoutResponse>('/auth/logout');
+            if (response && response.data && response.data.success) {
                 console.log('Logout successful');
             } else {
-                console.error('Logout failed:', response.data.message);
+                console.error('Logout failed:', response.data?.message || 'Unknown error');
             }
         } catch (error) {
             console.error('Logout error:', error);
@@ -69,13 +56,11 @@ export const authService = {
     // Check if user is authenticated
     checkAuth: async (): Promise<boolean> => {
         try {
-            const response = await axios.get(`${API_BASE_URL}/auth/user/data`, {
-                withCredentials: true
-            });
-            return !!response.data.user;
+            const response = await Axios.get<UserDataResponse>('/auth/user/data');
+            return !!(response && response.data && response.data.user);
         } catch (error) {
             console.log(error);
             return false;
         }
     }
-}; 
+};

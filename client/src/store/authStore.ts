@@ -1,19 +1,7 @@
 import { create } from "zustand";
-import { authService } from "../services/authService";
-import type { User } from "../services/authService";
+import { authService } from "@/services/auth-service";
 
-interface AuthStore {
-    user: User | null;
-    isAuthenticated: boolean;
-    isLoading: boolean;
-    error: string | null;
-    login: (userData: User) => void;
-    logout: () => void;
-    loginWithGoogle: () => void;
-    handleOAuthCallback: () => Promise<void>;
-    checkAuth: () => Promise<void>;
-    clearError: () => void;
-}
+
 
 export const useAuthStore = create<AuthStore>((set) => ({
     user: null,
