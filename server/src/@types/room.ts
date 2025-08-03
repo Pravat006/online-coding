@@ -3,5 +3,5 @@ export interface CreateRoomRequest {
 }
 
 export interface RoomId{
-  id: string;
+  roomName: string;
 }

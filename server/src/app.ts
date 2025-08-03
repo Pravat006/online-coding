@@ -9,6 +9,7 @@ import morganMiddleware from "./logger/morgan";
 import { initializeSocketIo } from "./socket/socket";
 import router from "./routes/index";
 import { errorConvertor, errorHandler } from "./handler/ErrorHandler";
+// import { apiLimiter } from  "@/config/rate-limiter.ts";
 
 const app = express();
 const httpServer = createServer(app)
@@ -40,7 +41,7 @@ app.use(
       httpOnly: true
     }
   }))
-
+// app.use(apiLimiter)
 app.use(passport.initialize());
 app.use(passport.session());
 

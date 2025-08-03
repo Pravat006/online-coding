@@ -77,7 +77,7 @@ const createColaborationRoom = AsyncHandler(async (req: Request, res: Response) 
 
     return res.status(201).json({
         status: "success",
-        data: roomId,
+        roomId: roomId,
         message: "Collaboration room created successfully"
     })
 });

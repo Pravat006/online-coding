@@ -1,9 +1,10 @@
 import { Router } from "express";
 import { createColaborationRoom, deleteColaborationRoom, joinColaborationRoom, leaveColaborationRoom } from "../../controllers/room.controller";
-// import { isAuthenticated } from "../middleware/auth.middleware.js";
+import { isAuthenticated } from "../../middleware/auth.middleware";
 const router = Router();
 
-// router.use(isAuthenticated);
+// Apply authentication middleware to all room routes
+router.use(isAuthenticated);
 
 router.route("/create")
     .post(createColaborationRoom);

@@ -3,8 +3,6 @@ import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { ApiError } from "../utils/ApiError";
 import prisma from "../db/client";
 import { UserModel } from "@/@types/passport";
-// import { DeserializedUser, User } from "@/@types/interface";
-
 
 try {
   // Serialize user into session

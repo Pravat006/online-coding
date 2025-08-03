@@ -20,7 +20,7 @@ router.route("/google")
 router.route("/google/callback")
     .get(passport.authenticate("google", {
         failureRedirect: `${process.env.CLIENT_URL}/login/failed`,
-        successRedirect: process.env.CLIENT_URL || "http://localhost:3000",
+        successRedirect: `${process.env.CLIENT_URL}/auth/callback`,
     }
     )
     );
