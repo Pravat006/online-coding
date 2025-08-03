@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAuthStore } from '../../store/authStore';
+import { useAuthStore } from '@/store/authStore';
 
 const GoogleLogin: React.FC = () => {
     const { loginWithGoogle, isLoading } = useAuthStore();

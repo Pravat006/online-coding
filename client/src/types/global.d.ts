@@ -1,13 +1,10 @@
-
-// aurh-store interface
-
+// Define the User interface
 interface User {
     id: string;
-    name: string;
+    name?: string;
     email: string;
-    avatar: string;
+    avatar?: string;
 }
-
 
 interface AuthStore {
     user: User | null;
@@ -18,17 +15,12 @@ interface AuthStore {
     logout: () => void;
     loginWithGoogle: () => void;
     handleOAuthCallback: () => Promise<void>;
+    getCurrentUser: () => Promise<User | null>;
     checkAuth: () => Promise<void>;
+    checkSession: () => Promise<boolean>;
     clearError: () => void;
 }
-// Need to define User interface
-interface User {
-    id: string;
-    name?: string;
-    email: string;
-    avatar?: string;
-    // Add other user properties as needed
-}
+
 
 interface UserDataResponse {
     user: User;
@@ -39,4 +31,15 @@ interface UserDataResponse {
 interface LogoutResponse {
     success: boolean;
     message?: string;
+}
+
+interface IRoomName {
+    roomName: string;
+}
+
+
+interface CopyLinkDialogueProps {
+    id: string;
+    isOpen: boolean;
+    onClose?: () => void;
 }

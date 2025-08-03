@@ -12,7 +12,7 @@ export default function OAuthCallback() {
         };
 
         handleCallback();
-    }, [handleOAuthCallback]);
+    }, []);
 
     useEffect(() => {
         if (isAuthenticated && !isLoading) {

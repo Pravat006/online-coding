@@ -12,7 +12,7 @@ function Home() {
 
             {/* <Navbar /> */}
             <Hero />
-            <Meeting />
+            {/*<Meeting />*/}
 
         </div>
     )

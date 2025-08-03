@@ -1,11 +1,26 @@
 // import React from 'react';
-import { useAuthStore } from '../../store/authStore';
+import { useAuthStore } from '@/store/authStore';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { LogOut, User, Mail } from 'lucide-react';
+import { useEffect } from "react";
 
 export default function UserProfile() {
-    const { user, isAuthenticated, logout } = useAuthStore();
+    const { user, isAuthenticated, logout, getCurrentUser } = useAuthStore();
+
+    // Only fetch user data once when the component mounts and if not already loaded
+    useEffect(() => {
+        // Check if we already have user data before making API call
+        const store = useAuthStore.getState();
+        if (!store.user || !store.isAuthenticated) {
+            const fetchUserOnce = async () => {
+                await getCurrentUser();
+            };
+            fetchUserOnce();
+        }
+        // We intentionally don't include dependencies here to prevent refetching
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     if (!isAuthenticated || !user) {
         return null;
